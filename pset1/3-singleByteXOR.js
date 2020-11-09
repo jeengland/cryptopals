@@ -29,29 +29,27 @@ const frequencyTable = [
     ['z', 0.07]
 ]
 
-let stdChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ "
+let stdChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ !?'\"\n"
 
 const frequencyCheck = (str) => {
     let score = 0;
     // Initial score checks for presence of non-alphanumeric characters / spaces
-    for (let i = 0; i < str.length; i ++) {
+    for (let i = 0; i < str.length; i++) {
         if (!stdChars.includes(str[i])) {
-            score++
+            score -= 100
         }
     }
     // Second check adds to the score based on deviance from English character frequencies
-    str = str.replace(/[^a-zA-Z]/g,"").toLowerCase();
     for (let i = 0; i < frequencyTable.length; i++) {
         let char = frequencyTable[i][0];
         let appearances = str.split(char).length - 1 ;
         let frequency = appearances / str.length * 100;
         frequency = parseFloat(frequency.toString().substring(0, 5))
-        score += Math.abs(frequencyTable[i][1] - frequency);
+        score -= Math.abs(frequencyTable[i][1] - frequency);
     };
     return score;
 };
 
-const keys = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 const decrypt = (buffer, key) => {
     let bytes = []
@@ -63,20 +61,22 @@ const decrypt = (buffer, key) => {
 
 const findKey = (str) => {
     const bytes = Buffer.from(str, 'hex')
-    let best = {score: Infinity, string: '', key: ''}
-    for (let i = 0; i < keys.length; i++) {
-        const decrypted = decrypt(bytes, keys[i])
+    let best = {score: -Infinity, string: '', key: ''}
+    for (let i = 0; i < 256; i++) {
+        const key = String.fromCharCode(i)
+        const decrypted = decrypt(bytes, key)
         let score = frequencyCheck(decrypted)
-        if (score < best.score) {
-            console.log(decrypted)
+        if (score > best.score) {
             best = {
                 score: score,
                 string: decrypted,
-                key: keys[i]
+                key: key
             }
         }
     }
     return best
 }
 
-console.log(findKey(input))
+module.exports = { findKey }
+
+// console.log(findKey(input))
