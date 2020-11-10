@@ -14,7 +14,7 @@ const fixedXOR = (input, key) => {
 }
 
 const test = (input, key, output) => {
-    return console.log(fixedXOR(input, key) == output)
+    return console.log("XOR matches expected output:", (fixedXOR(input, key) == output))
 }
 
 test(input, key, output)

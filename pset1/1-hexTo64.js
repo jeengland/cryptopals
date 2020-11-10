@@ -9,7 +9,7 @@ const hexToBase64 = (str) => {
 
 const test = (hex, b64) => {
     const converted = hexToBase64(input)
-    return console.log(converted === b64)
+    return console.log("Conversion matches expected output:", (converted === b64))
 }
 
 test(input, output)
