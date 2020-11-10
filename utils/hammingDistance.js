@@ -1,19 +1,16 @@
-const fixedXOR = require('../pset1/2-fixedXOR')
+const fixedXOR = require('../pset1/2-fixedXOR.js');
+const stringToHex = require('./stringToHex.js');
 
 const hammingDistance = (a, b) => {
-    return fixedXOR(a, b)
-}
+    let distance = 0;
+    const bytes = fixedXOR(a, b);
+    for (let i = 0; i < bytes.length; i++) {
+        distance += bytes[i].toString(2).match(/1/g).length;
+    };
+    return distance;
+};
 
-const stringToBinary = (str) => {
-    binary = ''
-    for (let i = 0; i < str.length; i++) {
-        binary += str.charCodeAt(i).toString(2)
-    }
-    return binary
-}
+module.exports = hammingDistance;
 
-const input = '1c0111001f010100061a024b53535009181c'
-const key = '686974207468652062756c6c277320657965'
-
-// console.log(hammingDistance("this is a test", "wokka wokka!!!"))
-console.log(hammingDistance(input, key))
+// console.log(hammingDistance(stringToHex("this is a test"), stringToHex("wokka wokka!!!")));
+// Should output 37
